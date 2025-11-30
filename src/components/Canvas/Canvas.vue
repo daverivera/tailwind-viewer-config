@@ -1,64 +1,81 @@
 <template>
-  <div class="bg-gray-100 dark:bg-midnight">
-    <div
-      v-if="!config"
-      style="height: calc(100vh - 63px);"
-      class="flex items-center justify-center">
-        <p class="text-gray-600 text-center font-bold">Loading Config...</p>
+    <div class="bg-gray-100 dark:bg-midnight">
+        <div
+            v-if="!config"
+            style="height: calc(100vh - 63px)"
+            class="flex items-center justify-center"
+        >
+            <p class="text-gray-600 text-center font-bold">Loading Config...</p>
+        </div>
+        <template v-if="config">
+            <div class="pt-8 px-3 flex">
+                <div
+                    class="hidden md:block flex-none h-full overflow-y-auto top-0 sticky max-h-screen pt-2"
+                >
+                    <ToggleSwitch
+                        name="dark-mode"
+                        class="mb-3 ml-3"
+                        :value="darkMode"
+                        @input="$emit('toggle-dark-mode', $event)"
+                        label="Dark Mode"
+                    />
+                    <div class="ml-3 text-sm text-gray-700 dark:text-gray-500">
+                        Tailwind v{{ config.tailwindVersion }}
+                    </div>
+                    <nav class="pt-3 pr-20 pb-12 px-3 h-full">
+                        <a
+                            v-for="section in configTransformed"
+                            :key="section.title"
+                            :href="`#${section.title}`"
+                            class="relative flex items-center py-2 hover:text-gray-900 dark-hover:text-gray-200 text-base rounded-sm"
+                            :class="[
+                                activeSection === section
+                                    ? 'text-gray-900 dark:text-gray-200'
+                                    : 'text-gray-700 dark:text-gray-500',
+                            ]"
+                            @click="setActiveSection(section)"
+                        >
+                            <div
+                                class="absolute rounded-full bg-gray-500 dark:bg-gray-600 transition duration-200"
+                                :class="[
+                                    activeSection === section
+                                        ? 'visible opacity-100'
+                                        : 'invisible opacity-0',
+                                ]"
+                                :style="{
+                                    width: '5px',
+                                    height: '5px',
+                                    left: '-12px',
+                                }"
+                            />
+                            {{ section.title }}
+                        </a>
+                    </nav>
+                </div>
+                <div class="md:pl-4">
+                    <CanvasSection
+                        v-for="section in configTransformed"
+                        :key="section.title"
+                        :title="section.title"
+                        :id="section.title"
+                    >
+                        <Intersect
+                            :threshold="[0.0]"
+                            rootMargin="-40% 0px -60% 0px"
+                            @enter="setActiveSection(section)"
+                            @leaave="setActiveSection(null)"
+                        >
+                            <component
+                                :is="sectionComponent(section.component)"
+                                :data="section.data"
+                                :config="config"
+                            />
+                        </Intersect>
+                    </CanvasSection>
+                </div>
+            </div>
+        </template>
     </div>
-    <template v-if="config">
-      <div class="pt-8 px-3 flex">
-        <div class="hidden md:block flex-none h-full overflow-y-auto top-0 sticky max-h-screen pt-2">
-          <ToggleSwitch
-            name="dark-mode"
-            class="mb-3 ml-3"
-            :value="darkMode"
-            @input="$emit('toggle-dark-mode', $event)"
-            label="Dark Mode"
-          />
-          <div class="ml-3 text-sm text-gray-700 dark:text-gray-500">Tailwind v{{ config.tailwindVersion }}</div>
-          <nav class="pt-3 pr-20 pb-12 px-3 h-full">
-            <a
-              v-for="section in configTransformed"
-              :key="section.title"
-              :href="`#${section.title}`"
-              class="relative flex items-center py-2 hover:text-gray-900 dark-hover:text-gray-200 text-base rounded-sm"
-              :class="[activeSection === section ? 'text-gray-900 dark:text-gray-200' : 'text-gray-700 dark:text-gray-500']"
-              @click="setActiveSection(section)"
-            >
-              <div
-                class="absolute rounded-full bg-gray-500 dark:bg-gray-600 transition duration-200"
-                :class="[activeSection === section ? 'visible opacity-100' : 'invisible opacity-0']"
-                :style="{width: '5px', height: '5px', left: '-12px'}"
-              />
-              {{ section.title }}
-            </a>
-          </nav>
-        </div>
-        <div class="md:pl-4">
-          <CanvasSection
-            v-for="section in configTransformed"
-            :key="section.title"
-            :title="section.title"
-            :id="section.title"
-          >
-            <Intersect
-              :threshold="[0.0]"
-              rootMargin="-40% 0px -60% 0px"
-              @enter="setActiveSection(section)"
-              @leaave="setActiveSection(null)"
-            >
-              <component
-                :is="sectionComponent(section.component)"
-                :data="section.data"
-                :config="config"
-              />
-            </Intersect>
-          </CanvasSection>
-        </div>
-      </div>
-    </template>
-  </div>
 </template>
 
 <script>
@@ -70,59 +87,106 @@ import CanvasSection from './CanvasSection'
 import ToggleSwitch from '../ToggleSwitch'
 import defaultOptions from '../../defaultOptions'
 
+// TODO: Move these to dynamic imports
+// Sections
+import BorderRadius from './Sections/BorderRadius.vue'
+import BorderWidth from './Sections/BorderWidth.vue'
+import Colors from './Sections/Colors.vue'
+import FontFamilies from './Sections/FontFamilies.vue'
+import FontSizes from './Sections/FontSizes.vue'
+import FontWeight from './Sections/FontWeight.vue'
+import Height from './Sections/Height.vue'
+import LetterSpacing from './Sections/LetterSpacing.vue'
+import LineHeight from './Sections/LineHeight.vue'
+import MaxHeight from './Sections/MaxHeight.vue'
+import MaxWidth from './Sections/MaxWidth.vue'
+import MinHeight from './Sections/MinHeight.vue'
+import MinWidth from './Sections/MinWidth.vue'
+import Opacity from './Sections/Opacity.vue'
+import Screens from './Sections/Screens.vue'
+import Shadows from './Sections/Shadows.vue'
+import Spacing from './Sections/Spacing.vue'
+import Transitions from './Sections/Transitions.vue'
+import Width from './Sections/Width.vue'
+
 export default {
-  components: {
-    CanvasSection,
-    ToggleSwitch,
-    Intersect
-  },
+    components: {
+        CanvasSection,
+        ToggleSwitch,
+        Intersect,
 
-  provide () {
-    return {
-      prefixClassName: this.prefixClassName,
-      getConfig: this.getConfig
-    }
-  },
-
-  props: {
-    darkMode: {
-      type: Boolean,
-      required: false
-    }
-  },
-
-  data () {
-    return {
-      activeSection: null,
-      config: null,
-      configTransformed: null
-    }
-  },
-
-  methods: {
-    sectionComponent (component) {
-      return require(`./Sections/${component}.vue`).default
+        // TODO: Move these to dynamic imports
+        BorderRadius,
+        BorderWidth,
+        Colors,
+        FontFamilies,
+        FontSizes,
+        FontWeight,
+        Height,
+        LetterSpacing,
+        LineHeight,
+        MaxHeight,
+        MaxWidth,
+        MinHeight,
+        MinWidth,
+        Opacity,
+        Screens,
+        Shadows,
+        Spacing,
+        Transitions,
+        Width,
     },
 
-    prefixClassName (className) {
-      return this.config.prefix ? `${this.config.prefix}${className}` : className
+    provide() {
+        return {
+            prefixClassName: this.prefixClassName,
+            getConfig: this.getConfig,
+        }
     },
 
-    getConfig () {
-      return this.config
+    props: {
+        darkMode: {
+            type: Boolean,
+            required: false,
+        },
     },
 
-    setActiveSection (section) {
-      this.activeSection = section
-    }
-  },
+    data() {
+        return {
+            activeSection: null,
+            config: null,
+            configTransformed: null,
+        }
+    },
 
-  async mounted () {
-    const config = await fetch(window.__TCV_CONFIG.configPath)
-    this.config = await config.json()
-    this.config = defu(this.config, defaultOptions)
-    this.configTransformed = themeComponentMapper(this.config.theme)
-    fontTagCreator(this.config.theme)
-  }
+    methods: {
+        sectionComponent(component) {
+            // TODO: Define this as dynamic comps
+            // return require(`./Sections/${component}.vue`).default;
+            return component
+        },
+
+        prefixClassName(className) {
+            return this.config.prefix
+                ? `${this.config.prefix}${className}`
+                : className
+        },
+
+        getConfig() {
+            return this.config
+        },
+
+        setActiveSection(section) {
+            this.activeSection = section
+        },
+    },
+
+    async mounted() {
+        const config = await fetch(window.__TCV_CONFIG.configPath)
+        this.config = await config.json()
+        this.config = defu(this.config, defaultOptions)
+        this.configTransformed = themeComponentMapper(this.config.theme)
+        fontTagCreator(this.config.theme)
+    },
 }
 </script>
