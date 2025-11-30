@@ -1,6 +1,6 @@
 {
     "name": "tailwind-viewer-config",
-    "version": "0.1.0",
+    "version": "1.0.0",
     "description": "View your Tailwind CSS config file...visually!",
     "author": {
         "name": "Dave Rivera",
@@ -21,9 +21,9 @@
         "tailwind-config-viewer": "./cli/index.js",
         "tailwindcss-config-viewer": "./cli/index.js"
     },
-    "repository": "github:rogden/tailwind-config-viewer",
+    "repository": "github:daverivera/tailwind-viewer-config",
     "bugs": {
-        "url": "https://github.com/rogden/tailwind-config-viewer/issues"
+        "url": "https://github.com/daverivera/tailwind-viewer-config/issues"
     },
     "keywords": [
         "tailwind",
