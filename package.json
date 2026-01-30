@@ -7,7 +7,7 @@
         "email": "dave.rivera@adyen.com"
     },
     "scripts": {
-        "dev:server": "node cli/index.js -c tailwind.config.sample.js",
+        "dev:server": "node cli/index.js -c tailwind.config.js",
         "dev:app": "vite serve",
         "serve": "pnpm dev:server & pnpm dev:app",
         "build": "vite build",
@@ -47,6 +47,7 @@
         "koa": "2.16.3",
         "koa-static": "5.0.0",
         "open": "7.4.2",
+        "lodash": "4.17.21",
         "portfinder": "1.0.38",
         "replace-in-file": "6.3.5"
     },
@@ -54,6 +55,8 @@
         "tailwindcss": "4"
     },
     "devDependencies": {
+        "@tailwindcss/vite": "4.1.17",
+        "@vitejs/plugin-vue2": "2.3.3",
         "babel-eslint": "10.1.0",
         "core-js": "2.6.12",
         "defu": "3.2.2",
@@ -61,13 +64,12 @@
         "eslint-plugin-vue": "5.2.3",
         "sass": "1.94.2",
         "sass-loader": "9.0.3",
-        "tailwindcss": "1.9.6",
+        "tailwindcss": "4.1.17",
         "tailwindcss-dark-mode": "1.1.7",
         "vue": "2.7.16",
         "vue-draggable-resizable": "2.3.0",
         "vue-intersect": "1.1.6",
         "vue-template-compiler": "2.7.16",
-        "@vitejs/plugin-vue2": "2.3.3",
         "vite": "6.2.7"
     }
 }

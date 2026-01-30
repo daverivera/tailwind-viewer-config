@@ -5,49 +5,54 @@ const portfinder = require('portfinder')
 const open = require('open')
 const { resolveConfig } = require('../lib/tailwindConfigUtils')
 
-function createServer ({
-  port = 3000,
-  tailwindConfigProvider,
-  shouldOpen,
-  routerPrefix = ''
+function createServer({
+    port = 3000,
+    tailwindConfigProvider,
+    shouldOpen,
+    routerPrefix = '',
 }) {
-  const app = new Koa()
+    const app = new Koa()
 
-  const router = new Router({ prefix: routerPrefix })
+    const router = new Router({ prefix: routerPrefix })
 
-  router.get('/config.json', async (ctx) => {
-    const config = await tailwindConfigProvider()
-    ctx.body = resolveConfig(config)
-  })
+    router.get('/config.json', async (ctx) => {
+        const config = await tailwindConfigProvider()
+        ctx.body = resolveConfig(config)
+    })
 
-  app
-    .use(serve(`${__dirname}/../dist`))
-    .use(router.routes())
-    .use(router.allowedMethods())
+    app.use(serve(`${__dirname}/../dist`))
+        .use(router.routes())
+        .use(router.allowedMethods())
 
-  return {
-    app,
-    asMiddleware: () => {
-      return app.callback()
-    },
-    start: () => {
-      portfinder.getPort({
-        port
-      }, (err, port) => {
-        if (err) {
-          throw (err)
-        }
+    return {
+        app,
+        asMiddleware: () => {
+            return app.callback()
+        },
+        start: () => {
+            portfinder.getPort(
+                {
+                    port,
+                },
+                (err, port) => {
+                    if (err) {
+                        throw err
+                    }
 
-        app.listen(port, async () => {
-          console.log('Server Started ∹ http://localhost:' + port.toString())
+                    app.listen(port, async () => {
+                        console.log(
+                            'Server Started ∹ http://localhost:' +
+                                port.toString()
+                        )
 
-          if (shouldOpen) {
-            open('http://localhost:' + port.toString())
-          }
-        })
-      })
+                        if (shouldOpen) {
+                            open('http://localhost:' + port.toString())
+                        }
+                    })
+                }
+            )
+        },
     }
-  }
 }
 
 module.exports = createServer
